@@ -8,7 +8,7 @@ os.makedirs(LOG_DIR,exist_ok=True)
 
 
 def get_logger(filename:str)->logging.Logger:
-    log_file=os.path.splittext(filename)[0]+".log"
+    log_file=os.path.splitext(filename)[0]+".log"
 
     log_path=os.path.join(LOG_DIR,log_file)
 
