@@ -1,0 +1,73 @@
+# -------------------------
+# Backend
+# -------------------------
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic
+
+# -------------------------
+# Image Processing
+# -------------------------
+opencv-python
+opencv-contrib-python
+numpy
+Pillow
+scikit-image
+
+# -------------------------
+# OCR
+# -------------------------
+paddlepaddle
+paddleocr
+
+
+
+# -------------------------
+# Face Detection & Verification
+# -------------------------
+insightface
+onnxruntime
+mediapipe
+
+# -------------------------
+# Deep Learning
+# -------------------------
+torch
+torchvision
+
+# -------------------------
+# Image Enhancement
+# -------------------------
+basicsr
+realesrgan
+
+# -------------------------
+# Data Processing
+# -------------------------
+pandas
+scipy
+
+# -------------------------
+# Utilities
+# -------------------------
+tqdm
+python-dotenv
+requests
+loguru
+
+# -------------------------
+# Database
+# -------------------------
+sqlalchemy
+psycopg2-binary
+
+# -------------------------
+# Testing
+# -------------------------
+pytest
+
+# -------------------------
+# Visualization
+# -------------------------
+matplotlib
