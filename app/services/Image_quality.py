@@ -111,19 +111,54 @@ class ImageQualityAnalyzer:
     # Complete Analysis
     ####################################################
 
-    def analyze_image_quality(self):
-        analysis_results = {
-            "blur_score": self.blur_score(),
-            "is_blurry": self.is_blurry(),
-            "brightness": self.brightness(),
-            "brightness_status": self.brightness_status(),
-            "contrast": self.contrast(),
-            "resolution": self.resolution(),
-            "noise": self.Noise(),
-            "glare_score": self.glare_score()
+    def analyze(self):
+
+        issues = []
+
+        # Blur
+        blur = self.blur_score()
+        if blur < 120:
+            issues.append("Image is blurry")
+
+        # Brightness
+        brightness = self.brightness()
+        if brightness < 60:
+            issues.append("Image is too dark")
+        elif brightness > 240:
+            issues.append("Image is too bright")
+
+        # Resolution
+        width, height = self.resolution()
+        if width < 64 or height < 64:
+            issues.append("Low resolution")
+
+        # Glare
+        glare = self.glare_score()
+        if glare > 70:
+            issues.append("Too much glare")
+
+        # Noise
+        noise = self.Noise()
+        if noise > 20:
+            issues.append("Image contains excessive noise")
+
+        result = {
+            "status": "PASS" if len(issues) == 0 else "FAIL",
+            "issues": issues,
+            "metrics": {
+                "blur_score": round(blur, 2),
+                "brightness": round(brightness, 2),
+                "contrast": round(self.contrast(), 2),
+                "resolution": {
+                    "width": width,
+                    "height": height
+                },
+                "noise_score": round(noise, 2),
+                "glare_percentage": glare
+            }
         }
-        logger.info(f"Complete image quality analysis for {self.image_path}: {analysis_results}")
-        return analysis_results
+
+        return result
 
 
 

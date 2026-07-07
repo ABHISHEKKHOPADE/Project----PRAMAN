@@ -1,13 +1,12 @@
 from app.services.Image_quality import ImageQualityAnalyzer
 
+import json
 
 image=ImageQualityAnalyzer("uploads\download (4).jpeg")
 
-report=image.analyze_image_quality()
+report=image.analyze()
 
 
-print("\nImage Quality Report")
+print(report)
 
 
-for key,value in report.items():
-    print(f"{key:<20}:{value}")
