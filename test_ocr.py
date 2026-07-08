@@ -6,7 +6,7 @@ from app.services.ocr_service import OCRService
 ocr = OCRService()
 
 report = ocr.extract_text(
-    r"uploads\aadhaar.jpg"
+    r"E:\pr1\Project----PRAMAN\uploads\dholewal-aadhaar-card-center-dholewal-ludhiana-aadhaar-card-agents-7mb380p7h3.avif",
 )
 
 print("\nOCR REPORT\n")
@@ -19,7 +19,7 @@ print(
 )
 
 output = ocr.draw_boxes(
-    r"uploads\aadhaar.jpg",
+    r"uploads\download (4).jpeg",
     report
 )
 

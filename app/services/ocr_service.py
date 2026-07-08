@@ -10,7 +10,7 @@ class OCRService:
         print("Loading EasyOCR Model...")
 
         self.reader = easyocr.Reader(
-            ['en','hi'],
+            ['en'],
             gpu=False
         )
         print("OCR Model Loaded")
@@ -26,10 +26,15 @@ class OCRService:
         ).process()
 
         detections = self.reader.readtext(
-            processed,
-            detail=1,
-            paragraph=False
-        )
+    processed,
+    detail=1,
+    paragraph=False,
+    decoder="beamsearch",
+    width_ths=0.5,
+    height_ths=0.5,
+    text_threshold=0.4,
+    low_text=0.2
+)
 
         # annotated = cv2.cvtColor(
         #     processed,
@@ -88,7 +93,7 @@ class OCRService:
                     3
                 ),
 
-                "bounding_box": pts
+                "bbox": pts
 
             })
 

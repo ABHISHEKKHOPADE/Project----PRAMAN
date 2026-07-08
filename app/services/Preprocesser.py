@@ -1,6 +1,8 @@
-import os
+from PIL import Image
+import pillow_avif
 import cv2
-
+import numpy as np
+import os
 from app.Configuration.config import Config
 
 
@@ -8,9 +10,12 @@ class OCRPreprocessor:
 
     def __init__(self, image_path):
 
-        self.image_path = image_path
+        img = Image.open(image_path)
 
-        self.image = cv2.imread(image_path)
+        self.image = cv2.cvtColor(
+            np.array(img),
+            cv2.COLOR_RGB2BGR
+        )
 
         if self.image is None:
             raise FileNotFoundError(
