@@ -7,12 +7,14 @@ from app.services.Preprocesser import OCRPreprocessor
 class OCRService:
 
     def __init__(self):
+
         print("Loading EasyOCR Model...")
 
         self.reader = easyocr.Reader(
             ['en'],
             gpu=False
         )
+
         print("OCR Model Loaded")
 
     ##########################################################
@@ -21,77 +23,60 @@ class OCRService:
 
     def extract_text(self, image_path):
 
-        processed = OCRPreprocessor(
-            image_path
-        ).process()
+        processed = OCRPreprocessor(image_path).process()
 
         detections = self.reader.readtext(
-    processed,
-    detail=1,
-    paragraph=False,
-    decoder="beamsearch",
-    width_ths=0.5,
-    height_ths=0.5,
-    text_threshold=0.4,
-    low_text=0.2
-)
-
-        # annotated = cv2.cvtColor(
-        #     processed,
-        #     cv2.COLOR_GRAY2BGR
-        # )
+            processed,
+            detail=1,
+            paragraph=False,
+            decoder="beamsearch",
+            width_ths=0.7,
+            height_ths=0.7,
+            text_threshold=0.4,
+            low_text=0.25,
+            link_threshold=0.4
+        )
 
         results = []
 
         for detection in detections:
 
-            bbox, text, confidence = detection
+            try:
+                bbox, text, confidence = detection
+            except ValueError:
+                continue
 
             confidence = float(confidence)
+
+            # Ignore low confidence detections
+            if confidence < 0.30:
+                continue
+
+            text = text.strip()
+
+            # Ignore empty text
+            if len(text) < 2:
+                continue
+
+            # Ignore only punctuation
+            if text in ["{", "}", "~", "|", ".", ",", ";", ":"]:
+                continue
 
             pts = []
 
             for p in bbox:
-
                 pts.append(
-                    (int(p[0]), 
-                     int(p[1])
-                     )
+                    [
+                        int(p[0]),
+                        int(p[1])
+                    ]
                 )
-
-            # cv2.polylines(
-            #     annotated,
-            #     [cv2.convexHull(
-            #         cv2.UMat(
-            #             cv2.convexHull
-            #         )
-            #     )],
-            #     True,
-            #     (0, 255, 0),
-            #     2
-            # )
-
-            # x = pts[0][0]
-            # y = pts[0][1]
-
-            # cv2.putText(
-            #     annotated,
-            #     text,
-            #     (x, y - 5),
-            #     cv2.FONT_HERSHEY_SIMPLEX,
-            #     0.5,
-            #     (0, 0, 255),
-            #     1
-            # )
 
             results.append({
 
                 "text": text,
 
-                "confidence": round(
-                    confidence,
-                    3
-                ),
+                "confidence": round(confidence, 3),
 
                 "bbox": pts
 
@@ -99,48 +84,58 @@ class OCRService:
 
         return {
 
-            "status":
-                "PASS"
-                if len(results)
-                else "FAIL",
+            "status": "PASS" if len(results) else "FAIL",
 
-            "total_lines":
-                len(results),
+            "total_lines": len(results),
 
-            "results":
-                results,
-
-            # "image":
-            #     annotated
+            "results": results
 
         }
-    
-     ##########################################################
-    # Draw Bounding Boxes
+
+    ##########################################################
+    # Draw OCR Boxes
     ##########################################################
 
     def draw_boxes(
+
             self,
+
             image_path,
+
             report,
+
             output_path="processed/ocr_output.jpg"
+
     ):
 
         image = cv2.imread(image_path)
 
+        if image is None:
+
+            raise FileNotFoundError(image_path)
+
         image = cv2.resize(
+
             image,
+
             None,
+
             fx=3,
+
             fy=3,
+
             interpolation=cv2.INTER_CUBIC
+
         )
 
         for item in report["results"]:
 
             pts = np.array(
+
                 item["bbox"],
+
                 dtype=np.int32
+
             )
 
             cv2.polylines(
@@ -151,7 +146,7 @@ class OCRService:
 
                 True,
 
-                (0,255,0),
+                (0, 255, 0),
 
                 2
 
@@ -167,21 +162,24 @@ class OCRService:
 
                 item["text"],
 
-                (x,y-5),
+                (x, y - 5),
 
                 cv2.FONT_HERSHEY_SIMPLEX,
 
                 0.6,
 
-                (0,0,255),
+                (0, 0, 255),
 
                 2
 
             )
 
         cv2.imwrite(
+
             output_path,
+
             image
+
         )
 
         return output_path
