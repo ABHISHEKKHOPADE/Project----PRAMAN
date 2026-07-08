@@ -1,0 +1,31 @@
+{
+    "status": "VERIFIED",
+    "confidence": 100,
+    "generated_at": "2026-07-08 19:22:33.214139",
+    "image_quality": {
+        "status": "PASS",
+        "blur_score": 252.6,
+        "resolution": "1200x800"
+    },
+    "ocr": {
+        "status": "PASS",
+        "total_lines": 10
+    },
+    "aadhaar": {
+        "status": "PASS",
+        "name": "Sutapa Pal Datta",
+        "dob": "26/01/1979",
+        "gender": "Female",
+        "aadhaar_number": "6641 2804 9316"
+    },
+    "face": {
+        "status": "PASS",
+        "verified": true,
+        "similarity": 91.5
+    },
+    "tampering": {
+        "status": "PASS",
+        "tampered": false,
+        "risk_score": 18
+    }
+}

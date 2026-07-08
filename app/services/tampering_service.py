@@ -2,25 +2,59 @@ import cv2
 import numpy as np
 import os
 
+from PIL import Image
+import pillow_avif
+
 
 class TamperingService:
 
     def __init__(self):
         pass
 
-    ####################################################
-    ## Read Image
-    ####################################################
+   ####################################################
+## Read Image (Supports JPG, PNG, JPEG, WEBP, AVIF)
+####################################################
 
     def read_image(self, image_path):
 
         if not os.path.exists(image_path):
-            raise FileNotFoundError(image_path)
+            raise FileNotFoundError(
+                f"Image not found: {image_path}"
+            )
+
+        extension = os.path.splitext(image_path)[1].lower()
+
+        # ---------- AVIF ----------
+        if extension == ".avif":
+
+            try:
+
+                image = Image.open(image_path).convert("RGB")
+
+                image = np.array(image)
+
+                image = cv2.cvtColor(
+                    image,
+                    cv2.COLOR_RGB2BGR
+                )
+
+                return image
+
+            except Exception as e:
+
+                raise ValueError(
+                    f"Cannot read AVIF image.\n{e}"
+                )
+
+        # ---------- Other Images ----------
 
         image = cv2.imread(image_path)
 
         if image is None:
-            raise ValueError("Cannot read image.")
+
+            raise ValueError(
+                f"Cannot read image: {image_path}"
+            )
 
         return image
 
@@ -154,15 +188,11 @@ class TamperingService:
 
         return good_matches
 
-    ####################################################
-    ## Metadata Check
-    ####################################################
+   ####################################################
+## Metadata Check
+####################################################
 
     def metadata_check(self, image_path):
-
-        extension = os.path.splitext(
-            image_path
-        )[1].lower()
 
         allowed = [
 
@@ -179,6 +209,10 @@ class TamperingService:
             ".avif"
 
         ]
+
+        extension = os.path.splitext(
+            image_path
+        )[1].lower()
 
         return extension in allowed
 
