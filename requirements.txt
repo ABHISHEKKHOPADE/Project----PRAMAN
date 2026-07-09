@@ -1,73 +1,44 @@
-# -------------------------
-# Backend
-# -------------------------
-fastapi
-uvicorn[standard]
-python-multipart
-pydantic
+# =========================
+# Backend API
+# =========================
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+python-multipart>=0.0.9
+pydantic>=2.0.0
 
-# -------------------------
-# Image Processing
-# -------------------------
-opencv-python
-opencv-contrib-python
-numpy
-Pillow
-scikit-image
+# =========================
+# Computer Vision / Imaging
+# =========================
+opencv-python>=4.10.0
+numpy>=1.26.0
+Pillow>=10.0.0
+pillow-avif-plugin>=1.4.0
 
-# -------------------------
+# =========================
 # OCR
-# -------------------------
-paddlepaddle
-paddleocr
+# =========================
+easyocr>=1.7.0
 
+# =========================
+# Face Verification
+# =========================
+insightface>=0.7.3
+onnxruntime>=1.18.0
+scikit-learn>=1.4.0
 
+# =========================
+# Parsing / Matching
+# =========================
+rapidfuzz>=3.9.0
 
-# -------------------------
-# Face Detection & Verification
-# -------------------------
-insightface
-onnxruntime
-mediapipe
+# =========================
+# Reports / Utilities
+# =========================
+reportlab>=4.2.0
+loguru>=0.7.2
+python-dotenv>=1.0.1
 
-# -------------------------
-# Deep Learning
-# -------------------------
-torch
-torchvision
-
-# -------------------------
-# Image Enhancement
-# -------------------------
-basicsr
-realesrgan
-
-# -------------------------
-# Data Processing
-# -------------------------
-pandas
-scipy
-
-# -------------------------
-# Utilities
-# -------------------------
-tqdm
-python-dotenv
-requests
-loguru
-
-# -------------------------
-# Database
-# -------------------------
-sqlalchemy
-psycopg2-binary
-
-# -------------------------
+# =========================
 # Testing
-# -------------------------
-pytest
-
-# -------------------------
-# Visualization
-# -------------------------
-matplotlib
+# =========================
+pytest>=8.0.0
