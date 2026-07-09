@@ -2,33 +2,26 @@ from fastapi import APIRouter
 from fastapi import UploadFile
 from fastapi import File
 
-import shutil
 import os
+import shutil
 
-from app.services.Image_quality import ImageQualityAnalyzer
+from app.services.quality_service import ImageQualityService
 from app.services.ocr_service import OCRService
-from app.services.aadhaar_parser import AadhaarParser
+from app.services.parser import AadhaarParser
 from app.services.face_service import FaceVerificationService
 from app.services.tampering_service import TamperingService
-from app.services.report_service import ReportService
 
-router = APIRouter(
+router = APIRouter()
 
-    prefix="/verify",
-
-    tags=["Complete Verification"]
-
-)
-
-UPLOAD = "uploads"
+UPLOAD_DIR = "uploads"
 
 os.makedirs(
-    UPLOAD,
+    UPLOAD_DIR,
     exist_ok=True
 )
 
 
-@router.post("/")
+@router.post("/verify")
 async def verify(
 
     aadhaar: UploadFile = File(...),
@@ -38,40 +31,72 @@ async def verify(
 ):
 
     aadhaar_path = os.path.join(
-        UPLOAD,
+        UPLOAD_DIR,
         aadhaar.filename
     )
 
     selfie_path = os.path.join(
-        UPLOAD,
+        UPLOAD_DIR,
         selfie.filename
     )
 
-    with open(aadhaar_path, "wb") as f:
+    with open(
+        aadhaar_path,
+        "wb"
+    ) as buffer:
+
         shutil.copyfileobj(
             aadhaar.file,
-            f
+            buffer
         )
 
-    with open(selfie_path, "wb") as f:
+    with open(
+        selfie_path,
+        "wb"
+    ) as buffer:
+
         shutil.copyfileobj(
             selfie.file,
-            f
+            buffer
         )
 
-    quality = ImageQualityAnalyzer().analyze(
+    #####################################################
+    # Image Quality
+    #####################################################
+
+    quality = ImageQualityService()
+
+    quality_report = quality.analyze(
         aadhaar_path
     )
 
-    ocr = OCRService().extract_text(
+    #####################################################
+    # OCR
+    #####################################################
+
+    ocr = OCRService()
+
+    ocr_report = ocr.extract_text(
         aadhaar_path
     )
+
+    #####################################################
+    # Aadhaar Parsing
+    #####################################################
 
     parser = AadhaarParser(
-        ocr
-    ).parse()
+        ocr_report
+    )
 
-    face = FaceVerificationService().verify(
+    aadhaar_data = parser.parse()
+
+    #####################################################
+    # Face Verification
+    #####################################################
+
+    face = FaceVerificationService()
+
+    face_report = face.verify(
 
         aadhaar_path,
 
@@ -79,24 +104,58 @@ async def verify(
 
     )
 
-    tampering = TamperingService().analyze(
+    #####################################################
+    # Tampering
+    #####################################################
+
+    tampering = TamperingService()
+
+    tamper_report = tampering.analyze(
         aadhaar_path
     )
 
-    report = ReportService().generate(
+    #####################################################
+    # Confidence
+    #####################################################
 
-        quality,
+    confidence = 100
 
-        ocr,
+    if quality_report["status"] == "FAIL":
+        confidence -= 20
 
-        parser,
+    if not face_report["verified"]:
+        confidence -= 30
 
-        face,
+    if tamper_report["tampered"]:
+        confidence -= 20
 
-        tampering
+    if aadhaar_data["aadhaar_number"] is None:
+        confidence -= 15
 
+    if aadhaar_data["name"] is None:
+        confidence -= 15
+
+    confidence = max(
+        confidence,
+        0
     )
 
-    ReportService().save(report)
+    return {
 
-    return report
+        "status": "PASS"
+        if confidence > 60
+        else "FAIL",
+
+        "confidence": confidence,
+
+        "image_quality": quality_report,
+
+        "ocr": ocr_report,
+
+        "aadhaar": aadhaar_data,
+
+        "face": face_report,
+
+        "tampering": tamper_report
+
+    }
