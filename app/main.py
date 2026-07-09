@@ -5,6 +5,9 @@ from app.routes.ocr import router as ocr_router
 from app.routes.face import router as face_router
 from app.routes.quality import router as quality_router
 from app.routes.tampering import router as tampering_router
+from app.routes.history import router as history_router
+
+
 
 app = FastAPI(
 
@@ -41,3 +44,5 @@ app.include_router(
 app.include_router(
     tampering_router
 )
+
+app.include_router(history_router)

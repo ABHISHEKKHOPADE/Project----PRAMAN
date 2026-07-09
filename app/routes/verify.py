@@ -12,6 +12,7 @@ from app.services.face_service import FaceVerificationService
 from app.services.tampering_service import TamperingService
 
 from app.utils.pdf_report import PDFReportGenerator
+from app.database.database import Database
 
 router = APIRouter()
 
@@ -172,6 +173,11 @@ async def verify(
     pdf_path = pdf.generate(final_report)
 
     final_report["pdf_report"] = pdf_path
+    db = Database()
+
+    db.insert(final_report)
+
+    db.close()
 
     #####################################################
     # Return
