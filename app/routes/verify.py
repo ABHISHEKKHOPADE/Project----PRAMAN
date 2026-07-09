@@ -5,11 +5,13 @@ from fastapi import File
 import os
 import shutil
 
-from app.services.quality_service import ImageQualityService
+from app.services.Image_quality import ImageQualityAnalyzer
 from app.services.ocr_service import OCRService
-from app.services.parser import AadhaarParser
+from app.services.aadhaar_parser import AadhaarParser
 from app.services.face_service import FaceVerificationService
 from app.services.tampering_service import TamperingService
+
+from app.utils.pdf_report import PDFReportGenerator
 
 router = APIRouter()
 
@@ -64,7 +66,7 @@ async def verify(
     # Image Quality
     #####################################################
 
-    quality = ImageQualityService()
+    quality = ImageQualityAnalyzer()
 
     quality_report = quality.analyze(
         aadhaar_path
@@ -114,7 +116,7 @@ async def verify(
         aadhaar_path
     )
 
-    #####################################################
+        #####################################################
     # Confidence
     #####################################################
 
@@ -135,16 +137,17 @@ async def verify(
     if aadhaar_data["name"] is None:
         confidence -= 15
 
-    confidence = max(
-        confidence,
-        0
-    )
+    confidence = max(confidence, 0)
 
-    return {
+    status = "PASS" if confidence > 60 else "FAIL"
 
-        "status": "PASS"
-        if confidence > 60
-        else "FAIL",
+    #####################################################
+    # Final Report
+    #####################################################
+
+    final_report = {
+
+        "status": status,
 
         "confidence": confidence,
 
@@ -159,3 +162,19 @@ async def verify(
         "tampering": tamper_report
 
     }
+
+    #####################################################
+    # Generate PDF
+    #####################################################
+
+    pdf = PDFReportGenerator()
+
+    pdf_path = pdf.generate(final_report)
+
+    final_report["pdf_report"] = pdf_path
+
+    #####################################################
+    # Return
+    #####################################################
+
+    return final_report
