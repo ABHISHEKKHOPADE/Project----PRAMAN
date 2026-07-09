@@ -1,6 +1,6 @@
 # PRAMAN - AI Powered Aadhaar Verification System
 
-> **A production-minded Aadhaar document verification platform powered by OCR, face verification, image forensics, confidence scoring, PDF reporting, and FastAPI.**
+> **A production-minded Aadhaar document verification platform powered by OCR, face verification, image forensics, confidence scoring, PDF reporting and FastAPI.**
 
 <p align="center">
   <img alt="Python" src="https://img.shields.io/badge/Python-3.9%2B-3776AB?style=for-the-badge&logo=python&logoColor=white">
@@ -56,9 +56,9 @@
 
 **PRAMAN** is an AI-powered Aadhaar verification system designed to validate Aadhaar card submissions using a multi-stage verification pipeline.
 
-It combines **document OCR**, **structured data extraction**, **face matching**, **image quality analysis**, **tampering detection**, **confidence scoring**, **database logging**, and **PDF report generation** into a single FastAPI application.
+It combines **document OCR**, **structured data extraction**, **face matching**, **image quality analysis**, **tampering detection**, **confidence scoring**, **database logging** and **PDF report generation** into a single FastAPI application.
 
-The system accepts an Aadhaar card image and a selfie image, processes both through independent verification modules, calculates a final confidence score, stores the verification record, and returns a structured API response with a downloadable report path.
+The system accepts an Aadhaar card image and a selfie image, processes both through independent verification modules, calculates a final confidence score, stores the verification record and returns a structured API response with a downloadable report path.
 
 PRAMAN is built with a pragmatic stack:
 
@@ -67,14 +67,14 @@ PRAMAN is built with a pragmatic stack:
 - **OCR tooling** for text extraction from Aadhaar images.
 - **InsightFace** for face verification.
 - **SQLite** for lightweight local persistence.
-- **HTML, CSS, and JavaScript** for a simple frontend.
+- **HTML, CSS and JavaScript** for a simple frontend.
 - **PDF generation utilities** for verification reports.
 
 ---
 
 ## Why PRAMAN Exists
 
-Manual identity document checks are slow, inconsistent, and difficult to audit.
+Manual identity document checks are slow, inconsistent and difficult to audit.
 
 PRAMAN exists to make Aadhaar verification:
 
@@ -84,7 +84,7 @@ PRAMAN exists to make Aadhaar verification:
 - **More transparent** through module-level outputs.
 - **More developer-friendly** through a clean REST API.
 
-The goal is not to replace compliance review in high-risk environments, but to provide a strong automated screening layer that can support onboarding, internal verification workflows, and document quality checks.
+The goal is not to replace compliance review in high-risk environments, but to provide a strong automated screening layer that can support onboarding, internal verification workflows and document quality checks.
 
 ---
 
@@ -109,16 +109,16 @@ PRAMAN can be adapted for:
 | Feature | Description | Status |
 | --- | --- | --- |
 | 🔎 OCR | Extracts text from Aadhaar card images. | Supported |
-| 🧾 Aadhaar Data Extraction | Parses name, DOB, gender, and Aadhaar number from OCR output. | Supported |
+| 🧾 Aadhaar Data Extraction | Parses name, DOB, gender and Aadhaar number from OCR output. | Supported |
 | 🙂 Face Verification | Compares Aadhaar photo with uploaded selfie. | Supported |
-| 🖼️ Image Quality | Checks blur, brightness, contrast, and overall image usability. | Supported |
+| 🖼️ Image Quality | Checks blur, brightness, contrast and overall image usability. | Supported |
 | 🛡️ Tampering Detection | Detects possible manipulation signals using image forensics. | Supported |
 | 📊 Confidence Score | Converts module results into a final verification score. | Supported |
 | 📄 PDF Report | Generates a verification report for audit and download. | Supported |
 | 🗃️ SQLite Storage | Stores verification records locally. | Supported |
 | 🕘 History | Returns past verification attempts through an API endpoint. | Supported |
 | ⚡ Swagger API | FastAPI automatically exposes interactive API docs. | Supported |
-| 🌐 Frontend | Simple HTML, CSS, and JavaScript interface. | Supported |
+| 🌐 Frontend | Simple HTML, CSS and JavaScript interface. | Supported |
 | 🧩 AVIF Support | Can be extended with Pillow AVIF plugin for modern image formats. | Planned / Configurable |
 
 ---
@@ -244,7 +244,7 @@ PRAMAN/
 | OCR | Extracts raw text from Aadhaar card images. | OCR engine, OpenCV, NumPy |
 | Parser | Converts unstructured OCR text into Aadhaar fields. | Python, regex/string parsing |
 | Face | Compares Aadhaar face with selfie image. | InsightFace, OpenCV, embeddings |
-| Quality | Scores blur, brightness, contrast, and readability. | OpenCV, NumPy |
+| Quality | Scores blur, brightness, contrast and readability. | OpenCV, NumPy |
 | Tampering | Checks suspicious image manipulation patterns. | OpenCV, image forensics |
 | Database | Stores verification history and report metadata. | SQLite |
 | Frontend | Provides a simple upload and result viewing UI. | HTML, CSS, JavaScript |
@@ -906,7 +906,7 @@ GPU acceleration can improve:
 - OCR inference.
 - Image enhancement.
 
-Install the correct runtime packages for your GPU, CUDA version, and inference backend.
+Install the correct runtime packages for your GPU, CUDA version and inference backend.
 
 ---
 
@@ -1088,7 +1088,7 @@ Then register the plugin in the image loading path where needed.
 | Admin Dashboard | Add role-based verification review dashboard. |
 | Queue Processing | Process heavy verification jobs asynchronously. |
 | Object Storage | Store uploads and reports in S3-compatible storage. |
-| Better File Security | Add UUID filenames, MIME validation, and upload scanning. |
+| Better File Security | Add UUID filenames, MIME validation and upload scanning. |
 | Report Templates | Add customizable PDF templates. |
 | Metrics | Add Prometheus or OpenTelemetry instrumentation. |
 | CI/CD | Add GitHub Actions for linting and tests. |
@@ -1204,7 +1204,7 @@ Recommended contribution areas:
 <details>
 <summary><b>Does PRAMAN verify Aadhaar against an official government database?</b></summary>
 
-No. PRAMAN performs local document, image, OCR, and face verification checks. Official Aadhaar verification requires authorized integrations and compliance with applicable regulations.
+No. PRAMAN performs local document, image, OCR and face verification checks. Official Aadhaar verification requires authorized integrations and compliance with applicable regulations.
 
 </details>
 
@@ -1239,7 +1239,7 @@ AVIF support can be enabled through `pillow-avif-plugin` and compatible image lo
 <details>
 <summary><b>Is this production-ready?</b></summary>
 
-PRAMAN is a strong project foundation. Before production use, add authentication, file validation, encryption, retention policies, rate limits, monitoring, secure deployment, and legal review.
+PRAMAN is a strong project foundation. Before production use, add authentication, file validation, encryption, retention policies, rate limits, monitoring, secure deployment and legal review.
 
 </details>
 
@@ -1253,20 +1253,19 @@ See [LICENSE](LICENSE) for details.
 
 ---
 
-## 👤 Author
+## Author
 
-**Abhishek Khopade**
+**PRAMAN - AI Powered Aadhaar Verification System**
 
-Aspiring **ML Engineer | MLOps | LLMOps**
+Built as a modern AI verification project using FastAPI, OpenCV, OCR, face recognition, SQLite and a lightweight web frontend.
 
-🔗 GitHub:
-[https://github.com/ABHISHEKKHOPADE](https://github.com/ABHISHEKKHOPADE)
+If this project helps you, consider starring the repository and improving it through issues, pull requests and documentation updates.
 
 ---
 
 ## Acknowledgements
 
-PRAMAN is built with open source technologies from the Python, FastAPI, computer vision, OCR, and machine learning communities.
+PRAMAN is built with open source technologies from the Python, FastAPI, computer vision, OCR and machine learning communities.
 
 Key ecosystem tools include:
 
