@@ -1,17 +1,48 @@
 import cv2
 import numpy as np
 from logger import get_logger
+from PIL import Image
+import pillow_avif
+import os
 
 logger = get_logger(__name__)
 
 class ImageQualityAnalyzer:
-    def __init__(self,image_path):
+
+    def __init__(self, image_path):
+
         self.image_path = image_path
-        self.image = cv2.imread(image_path)
+
+        if not os.path.exists(image_path):
+            raise FileNotFoundError(image_path)
+
+        ext = os.path.splitext(image_path)[1].lower()
+
+        # AVIF Support
+        if ext == ".avif":
+
+            image = Image.open(image_path).convert("RGB")
+
+            image = np.array(image)
+
+            self.image = cv2.cvtColor(
+                image,
+                cv2.COLOR_RGB2BGR
+            )
+
+        else:
+
+            self.image = cv2.imread(image_path)
+
         if self.image is None:
-            logger.error(f"Image at path {image_path} could not be loaded.")
-            raise ValueError(f"Image at path {image_path} could not be loaded.")
-        self.gray=cv2.cvtColor(self.image,cv2.COLOR_BGR2GRAY)
+            raise ValueError(
+                f"Image at path {image_path} could not be loaded."
+            )
+
+        self.gray = cv2.cvtColor(
+            self.image,
+            cv2.COLOR_BGR2GRAY
+        )
 
     ####################################################
     # Blurriness Detection

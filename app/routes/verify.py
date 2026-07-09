@@ -67,11 +67,13 @@ async def verify(
     # Image Quality
     #####################################################
 
-    quality = ImageQualityAnalyzer()
+    #####################################################
+# Image Quality
+#####################################################
 
-    quality_report = quality.analyze(
-        aadhaar_path
-    )
+    quality = ImageQualityAnalyzer(aadhaar_path)
+
+    quality_report = quality.analyze()
 
     #####################################################
     # OCR
