@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>PRAMAN</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>PRAMAN</h1>
+
+    <p class="subtitle">
+        Aadhaar Verification System
+    </p>
+
+    <div class="card">
+
+        <h3>Upload Aadhaar Card</h3>
+
+        <input
+            type="file"
+            id="aadhaar"
+            accept="image/*"
+        >
+
+        <img
+            id="aadhaarPreview"
+            class="preview"
+        >
+
+    </div>
+
+    <div class="card">
+
+        <h3>Upload Selfie</h3>
+
+        <input
+            type="file"
+            id="selfie"
+            accept="image/*"
+        >
+
+        <img
+            id="selfiePreview"
+            class="preview"
+        >
+
+    </div>
+
+    <button
+        id="verifyBtn"
+    >
+        Verify Aadhaar
+    </button>
+
+    <div
+        id="loading"
+        class="loading"
+    >
+        Verifying...
+    </div>
+
+    <div
+        id="result"
+        class="result"
+    >
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
