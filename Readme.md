@@ -1253,13 +1253,14 @@ See [LICENSE](LICENSE) for details.
 
 ---
 
-## Author
+## 👤 Author
 
-**PRAMAN - AI Powered Aadhaar Verification System**
+**Abhishek Khopade**
 
-Built as a modern AI verification project using FastAPI, OpenCV, OCR, face recognition, SQLite, and a lightweight web frontend.
+Aspiring **ML Engineer | MLOps | LLMOps**
 
-If this project helps you, consider starring the repository and improving it through issues, pull requests, and documentation updates.
+🔗 GitHub:
+[https://github.com/ABHISHEKKHOPADE](https://github.com/ABHISHEKKHOPADE)
 
 ---
 
