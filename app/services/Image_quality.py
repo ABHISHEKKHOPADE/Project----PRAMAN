@@ -1,11 +1,12 @@
+import os
 import cv2
 import numpy as np
-from logger import get_logger
 from PIL import Image
 import pillow_avif
-import os
+from logger import get_logger
 
 logger = get_logger(__name__)
+
 
 class ImageQualityAnalyzer:
 
@@ -22,13 +23,8 @@ class ImageQualityAnalyzer:
         if ext == ".avif":
 
             image = Image.open(image_path).convert("RGB")
-
             image = np.array(image)
-
-            self.image = cv2.cvtColor(
-                image,
-                cv2.COLOR_RGB2BGR
-            )
+            self.image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
         else:
 
@@ -45,151 +41,172 @@ class ImageQualityAnalyzer:
         )
 
     ####################################################
-    # Blurriness Detection
+    # Blur
     ####################################################
 
-    
     def blur_score(self):
 
-        laplician_var=cv2.Laplacian((self.gray),cv2.CV_64F).var()
-        logger.info(f"Blur score (Laplacian variance) for image {self.image_path}: {laplician_var}")
-        return laplician_var
-    
-    def is_blurry(self,threshold=100.00):
-        score=self.blur_score()
-        is_blurry=score<threshold
-        logger.info(f"Image {self.image_path} is {'blurry' if is_blurry else 'not blurry'} with a score of {score} and threshold of {threshold}.")
-        return is_blurry
+        score = cv2.Laplacian(
+            self.gray,
+            cv2.CV_64F
+        ).var()
+
+        logger.info(f"Blur Score : {score}")
+
+        return float(score)
+
+    def is_blurry(self, threshold=100):
+
+        return self.blur_score() < threshold
 
     ####################################################
     # Brightness
     ####################################################
 
-
     def brightness(self):
 
-        mean= np.mean(self.gray)
-        
-        logger.info(f"Brightness analysis for image {self.image_path}: mean={mean}")
-        return mean
+        value = np.mean(self.gray)
 
-    def brightness_status(self,threshold_low1=60,threshold_high=200):
-        mean=self.brightness()
-        if mean<threshold_low1:
-            status="dark"
-        elif mean>threshold_high:
-            status="bright"
-        else:
-            status="normal"
+        logger.info(f"Brightness : {value}")
 
-        logger.info(f"Brightness status for image {self.image_path}: {status}")
-        return status
-    
+        return float(value)
 
+    def brightness_status(self):
+
+        b = self.brightness()
+
+        if b < 60:
+            return "dark"
+
+        elif b > 200:
+            return "bright"
+
+        return "normal"
 
     ####################################################
     # Contrast
     ####################################################
 
     def contrast(self):
-        contrast_score=self.gray.std()
-        logger.info(f"Contrast analysis for image {self.image_path}: contrast={contrast_score}")  
-        return contrast_score
-    
+
+        value = self.gray.std()
+
+        logger.info(f"Contrast : {value}")
+
+        return float(value)
+
     ####################################################
     # Resolution
     ####################################################
 
     def resolution(self):
-        height,width=self.image.shape[:2]
-        logger.info(f"Resolution analysis for image {self.image_path}: width={width}, height={height}")
-        return width,height
-    
+
+        h, w = self.image.shape[:2]
+
+        return int(w), int(h)
 
     ####################################################
     # Noise
     ####################################################
 
+    def noise(self):
 
-    def Noise(self):
-        gray=self.gray.astype(np.float32)
-        blurr=cv2.GaussianBlur(gray,(3,3),0).astype(np.float32)
+        gray = self.gray.astype(np.float32)
 
-        noise=np.mean(np.abs(gray-blurr))
+        blur = cv2.GaussianBlur(
+            gray,
+            (3, 3),
+            0
+        )
 
-        logger.info(f"Noise analysis for image {self.image_path}: noise={noise}")
-        return noise
-    
+        score = np.mean(
+            np.abs(gray - blur)
+        )
 
+        logger.info(f"Noise : {score}")
 
+        return float(score)
 
     ####################################################
-    # Glare Detection
+    # Glare
     ####################################################
 
     def glare_score(self):
-        bright_pixels=np.sum(self.gray>240)
-        total_pixels=self.gray.size
 
-        glare_ratio=round(bright_pixels/total_pixels,2)
-        logger.info(f"Glare analysis for image {self.image_path}: glare_ratio={glare_ratio}")
-        return glare_ratio*100
-    
+        bright = np.sum(self.gray > 240)
 
+        total = self.gray.size
 
+        glare = (bright / total) * 100
+
+        logger.info(f"Glare : {glare}")
+
+        return float(glare)
 
     ####################################################
-    # Complete Analysis
+    # Final Analysis
     ####################################################
 
     def analyze(self):
 
         issues = []
 
-        # Blur
         blur = self.blur_score()
+
+        brightness = self.brightness()
+
+        contrast = self.contrast()
+
+        width, height = self.resolution()
+
+        noise = self.noise()
+
+        glare = self.glare_score()
+
         if blur < 120:
             issues.append("Image is blurry")
 
-        # Brightness
-        brightness = self.brightness()
         if brightness < 60:
             issues.append("Image is too dark")
+
         elif brightness > 240:
             issues.append("Image is too bright")
 
-        # Resolution
-        width, height = self.resolution()
-        if width < 64 or height < 64:
-            issues.append("Low resolution")
+        if width < 640 or height < 480:
+            issues.append("Low Resolution")
 
-        # Glare
-        glare = self.glare_score()
         if glare > 70:
             issues.append("Too much glare")
 
-        # Noise
-        noise = self.Noise()
         if noise > 20:
-            issues.append("Image contains excessive noise")
+            issues.append("High noise")
 
-        result = {
+        return {
+
             "status": "PASS" if len(issues) == 0 else "FAIL",
+
             "issues": issues,
+
             "metrics": {
-                "blur_score": round(blur, 2),
-                "brightness": round(brightness, 2),
-                "contrast": round(self.contrast(), 2),
+
+                "blur_score": float(round(blur, 2)),
+
+                "brightness": float(round(brightness, 2)),
+
+                "contrast": float(round(contrast, 2)),
+
                 "resolution": {
-                    "width": width,
-                    "height": height
+
+                    "width": int(width),
+
+                    "height": int(height)
+
                 },
-                "noise_score": round(noise, 2),
-                "glare_percentage": glare
+
+                "noise_score": float(round(noise, 2)),
+
+                "glare_percentage": float(round(glare, 2))
+
             }
+
         }
-
-        return result
-
-
-
